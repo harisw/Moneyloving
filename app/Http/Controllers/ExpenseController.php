@@ -23,7 +23,7 @@ class ExpenseController extends Controller
     	}
     	$new_expense = new Expense;
     	$new_expense->judul_transaksi = $request->input('expense_name');
-    	$new_expense->jumlah = $request->input('expense_val');
+    	$new_expense->jumlah = 0;
     	$new_expense->category = $request->input('category');
     	$new_expense->tempat_pembelian = $request->input('expense_place');
     	$new_expense->id_user = 1;
@@ -34,6 +34,7 @@ class ExpenseController extends Controller
     		if($request->input('detailCheck'))
     		{
 	 			$count_detail =  $request->input('item_num');
+	 			$total = 0;
 	 			for($i = 1;$i <= $count_detail;$i++)
 	 			{
 	 				$data = array(
@@ -42,10 +43,13 @@ class ExpenseController extends Controller
 	 					'price' => $request->input('item_price_'.$i),
 	 					'id' => $new_expense->id
 	 				);
+	 				$total += ($request->input('item_price_'.$i)*$request->input('item_qty_'.$i));
 	 				$report = $this->createItemDetail($data);
 	 				if(!$report)
 	 					break;
 	 			}
+	 			$new_expense->jumlah = $total;
+	 			$new_expense->save();
     		}
 
     		return redirect('/')->with('status', 'New Income successfully added');

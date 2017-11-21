@@ -15,10 +15,6 @@
 	    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
 	  </div>
 	  <div class="form-group">
-	    <label for="exampleInputPassword1">Jumlah</label>
-	    <input type="number" class="form-control" id="exampleInputPassword1" placeholder="Enter expense Value in Rp" name="expense_val">
-	  </div>
-	  <div class="form-group">
 	    <label for="exampleFormControlSelect1">Category</label>
 	    <select class="form-control" id="exampleFormControlSelect1" name="category">
 	      <option>Kulakan</option>
