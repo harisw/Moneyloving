@@ -14,3 +14,6 @@
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/', 'HomeController@index');
+Route::get('/income/new', 'IncomeController@index');
+Route::get('/expense/new', 'ExpenseController@index');
