@@ -16,4 +16,6 @@ Route::get('/', function () {
 });
 Route::get('/', 'HomeController@index');
 Route::get('/income/new', 'IncomeController@index');
+Route::post('/income', 'IncomeController@create');
 Route::get('/expense/new', 'ExpenseController@index');
+Route::post('/expense', 'ExpenseController@create');
