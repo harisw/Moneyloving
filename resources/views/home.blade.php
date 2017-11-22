@@ -76,5 +76,40 @@
                 </div>
             </div>
         </div>
+        <div class="content table-responsive table-full-width">
+            <table class="table table-hover table-striped" id="example">
+                <thead>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Receipt</th>
+                    <th>Details</th>
+                </thead>
+                <tbody>
+                    @foreach($rec as $data)
+                    <tr>
+                        <td>{{$data->type}}</td>
+                        <td>{{$data->judul_transaksi}}</td>
+                        <td>Rp. {{number_format($data->jumlah)}}</td>
+                        <td>@if($data->category) {{$data->category}} @else - @endif</td>
+                        <td>{{date('d F Y', strtotime($data->created_at))}}</td>
+                        <td>@if($data->foto)
+                            <button type="button" data-toggle="modal" data-target="#receiptModal" data-id="{{$data->id}}" class="btn btn-sm btn-success btn-fill">
+                                <i class="fa fa-file-image-o" aria-hidden="true"></i>
+                            </button>
+                            @else -
+                            @endif
+                        </td>
+                        <td>
+                            <button type="button" data-toggle="modal" data-target="#detailModal" data-id="{{$data->id}}" class="btn btn-sm btn-success btn-fill">
+                                <i class="fa fa-list-ul" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
     </body>
 </html>

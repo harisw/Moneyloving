@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Expense extends Model
+class Record extends Model
 {
     protected $connection = 'mysql';
-    protected $table = 'expenses';
+    protected $table = 'record';
 
     public function details()
     {
-    	return $this->hasMany('App\Models\Detail','id_expense','id');
+    	return $this->hasMany('App\Models\Detail','id_record','id');
     }
 }
