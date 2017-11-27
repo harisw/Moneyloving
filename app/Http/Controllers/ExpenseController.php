@@ -149,7 +149,7 @@ class ExpenseController extends Controller
     	$new_item->nama_item = $data['name'];
     	$new_item->kuantitas = $data['qty'];
     	$new_item->harga = $data['price'];
-    	$new_item->id_expense = $data['id'];
+    	$new_item->id_record = $data['id'];
     	if($new_item->save())
     		return TRUE;
     	return FALSE;

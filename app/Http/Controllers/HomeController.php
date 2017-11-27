@@ -17,5 +17,5 @@ class HomeController extends Controller
 
     	//dd($exp);
     	return view('start', compact('rec'));
-    }
+    }	
 }
