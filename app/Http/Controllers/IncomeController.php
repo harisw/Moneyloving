@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Income;
 use File;
 use Illuminate\Support\Facades\Storage;
+use DB;
 
 class IncomeController extends Controller
 {
@@ -13,21 +14,47 @@ class IncomeController extends Controller
     {
     	return view('income.index');
     }
-
-    public function create(Request $request)
+    public function enkrip($data, $size)
     {
+        $length = $size - strlen($data) % $size;
+        return $data . str_repeat(chr($length), $length);
+    }
+    public function create(Request $request)
+    {   
+        //dd($request);
+        $id = $request->session()->get('id');
+        //dd($id);
+        $query = DB::select("SELECT users.kunci as kunci , users.IV as iv FROM users WHERE users.id = '".$id."'");
+        //dd($query);
     	if($request->hasFile('income_img'))
     	{
     		$img = $this->uploadImg($request, $request->input('income_name'));
     	}
+        $en_key = $query[0]->kunci;
+        $iv = $query[0]->iv;
+        //dd($en_key,$iv);
     	$new_income = new Income;
-    	$new_income->judul_transaksi = $request->input('income_name');
+        $new_income->judul_transaksi = openssl_encrypt(
+            $this->enkrip($request->input('income_name'), 16),
+            'AES-256-CBC',
+            $en_key,
+            0,
+            $iv
+            );
+    	//$new_income->judul_transaksi = $request->input('income_name');
     	$new_income->jumlah = $request->input('income_val');
-    	$new_income->id_user = 1;
+        /*$new_income->jumlah = openssl_encrypt(
+            $this->enkrip($request->input('income_val'), 16),
+            'AES-256-CBC',
+            $en_key,
+            0,
+            $iv
+            );*/
+    	$new_income->id_user = $id;
     	if($img)
     		$new_income->foto = $img;
     	if($new_income->save())
-    		return redirect('/')->with('status', 'New Income successfully added');
+    		return redirect('/home')->with('status', 'New Income successfully added');
     	return redirect('/income/new')->with('status', 'Income addition failed');
     }
 

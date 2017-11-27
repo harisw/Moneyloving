@@ -14,19 +14,42 @@ class ExpenseController extends Controller
     {
     	return view('expense.index');
     }
+    public function enkrip($data, $size)
+    {
+        $length = $size - strlen($data) % $size;
+        return $data . str_repeat(chr($length), $length);
+    }
 
     public function create(Request $request)
-    {
+    {   
+        $id = $request->session()->get('id');
+        $query = DB::select("SELECT users.kunci as kunci , users.IV as iv FROM users WHERE users.id = '".$id."'");
     	if($request->hasFile('expense_img'))
     	{
     		$img = $this->uploadImg($request, $request->input('expense_name'));
     	}
+        $en_key = $query[0]->kunci;
+        $iv = $query[0]->iv;
     	$new_expense = new Expense;
-    	$new_expense->judul_transaksi = $request->input('expense_name');
+    	//$new_expense->judul_transaksi = $request->input('expense_name');
+        $new_expense->judul_transaksi = openssl_encrypt(
+            $this->enkrip($request->input('expense_name'), 16),
+            'AES-256-CBC',
+            $en_key,
+            0,
+            $iv
+            );
     	$new_expense->jumlah = 0;
     	$new_expense->category = $request->input('category');
-    	$new_expense->tempat_pembelian = $request->input('expense_place');
-    	$new_expense->id_user = 1;
+    	//$new_expense->tempat_pembelian = $request->input('expense_place');
+    	$new_expense->tempat_pembelian = openssl_encrypt(
+            $this->enkrip($request->input('expense_place'), 16),
+            'AES-256-CBC',
+            $en_key,
+            0,
+            $iv
+            );
+        $new_expense->id_user = $id;
     	if($img)
     		$new_expense->foto = $img;
     	if($new_expense->save())
@@ -52,7 +75,7 @@ class ExpenseController extends Controller
 	 			$new_expense->save();
     		}
 
-    		return redirect('/')->with('status', 'New Income successfully added');
+    		return redirect('/home')->with('status', 'New Income successfully added');
     	}
     	return redirect('/expense/new')->with('status', 'Income addition failed');
     }
