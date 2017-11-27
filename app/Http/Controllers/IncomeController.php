@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Income;
+use App\Models\Record;
 use File;
 use Illuminate\Support\Facades\Storage;
 use DB;
@@ -52,6 +52,14 @@ class IncomeController extends Controller
             );*/
     	$new_income->id_user = $id;
     	if($img)
+    	$new_income = new Record;
+    	$new_income->judul_transaksi = $request->input('income_name');
+        $new_income->type = '+';
+        $new_income->category = 'Belanja Bulanan';
+        $new_income->tempat = 'Sakinah';
+    	$new_income->jumlah = $request->input('income_val');
+    	$new_income->id_user = 1;
+    	if(!empty($img))
     		$new_income->foto = $img;
     	if($new_income->save())
     		return redirect('/home')->with('status', 'New Income successfully added');

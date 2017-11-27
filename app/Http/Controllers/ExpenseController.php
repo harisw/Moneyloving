@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Expense;
+use App\Models\Record;
 use App\Models\Detail;
 use File;
 use Illuminate\Support\Facades\Storage;
@@ -50,6 +50,13 @@ class ExpenseController extends Controller
             $iv
             );
         $new_expense->id_user = $id;
+    	$new_expense = new Record;
+    	$new_expense->judul_transaksi = $request->input('expense_name');
+        $new_expense->type = '-';
+    	$new_expense->jumlah = 0;
+    	$new_expense->category = $request->input('category');
+    	$new_expense->tempat = $request->input('expense_place');
+    	$new_expense->id_user = 1;
     	if($img)
     		$new_expense->foto = $img;
     	if($new_expense->save())
