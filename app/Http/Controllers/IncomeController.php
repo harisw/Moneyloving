@@ -33,7 +33,8 @@ class IncomeController extends Controller
         $en_key = $query[0]->kunci;
         $iv = $query[0]->iv;
         //dd($en_key,$iv);
-    	$new_income = new Income;
+    	$new_income = new Record;
+    	//$new_income->judul_transaksi = $request->input('income_name');
         $new_income->judul_transaksi = openssl_encrypt(
             $this->enkrip($request->input('income_name'), 16),
             'AES-256-CBC',
@@ -41,24 +42,17 @@ class IncomeController extends Controller
             0,
             $iv
             );
-    	//$new_income->judul_transaksi = $request->input('income_name');
-    	$new_income->jumlah = $request->input('income_val');
-        /*$new_income->jumlah = openssl_encrypt(
-            $this->enkrip($request->input('income_val'), 16),
+        $new_income->type = '+';
+//        $new_income->tempat = 'Sakinah';
+        $new_income->tempat = openssl_encrypt(
+            $this->enkrip($request->input('place'), 16),
             'AES-256-CBC',
             $en_key,
             0,
             $iv
-            );*/
-    	$new_income->id_user = $id;
-    	if($img)
-    	$new_income = new Record;
-    	$new_income->judul_transaksi = $request->input('income_name');
-        $new_income->type = '+';
-        $new_income->category = 'Belanja Bulanan';
-        $new_income->tempat = 'Sakinah';
+            );
     	$new_income->jumlah = $request->input('income_val');
-    	$new_income->id_user = 1;
+    	$new_income->id_user = $id;
     	if(!empty($img))
     		$new_income->foto = $img;
     	if($new_income->save())

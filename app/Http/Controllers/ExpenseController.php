@@ -30,33 +30,26 @@ class ExpenseController extends Controller
     	}
         $en_key = $query[0]->kunci;
         $iv = $query[0]->iv;
-    	$new_expense = new Expense;
+    	$new_expense = new Record;
     	//$new_expense->judul_transaksi = $request->input('expense_name');
-        $new_expense->judul_transaksi = openssl_encrypt(
+        $new_income->judul_transaksi = openssl_encrypt(
             $this->enkrip($request->input('expense_name'), 16),
             'AES-256-CBC',
             $en_key,
             0,
             $iv
             );
+        $new_expense->type = '-';
     	$new_expense->jumlah = 0;
-    	$new_expense->category = $request->input('category');
-    	//$new_expense->tempat_pembelian = $request->input('expense_place');
-    	$new_expense->tempat_pembelian = openssl_encrypt(
+    	//$new_expense->tempat = $request->input('expense_place');
+        $new_income->tempat = openssl_encrypt(
             $this->enkrip($request->input('expense_place'), 16),
             'AES-256-CBC',
             $en_key,
             0,
             $iv
             );
-        $new_expense->id_user = $id;
-    	$new_expense = new Record;
-    	$new_expense->judul_transaksi = $request->input('expense_name');
-        $new_expense->type = '-';
-    	$new_expense->jumlah = 0;
-    	$new_expense->category = $request->input('category');
-    	$new_expense->tempat = $request->input('expense_place');
-    	$new_expense->id_user = 1;
+    	$new_expense->id_user = $id;
     	if($img)
     		$new_expense->foto = $img;
     	if($new_expense->save())

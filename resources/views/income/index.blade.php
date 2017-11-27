@@ -17,6 +17,10 @@
 	    <label for="exampleInputPassword1">Jumlah</label>
 	    <input type="number" class="form-control" id="exampleInputPassword1" placeholder="Enter income Value in Rp" name="income_val">
 	  </div>
+	  <div class="form-group">
+	    <label for="exampleInputPassword1">Tempat</label>
+	    <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Insert place" name="place">
+	  </div>
 	<div class="form-group">
     	<label>Foto Transaksi</label><br>
         <input type="file" id="inputImg" name="income_img" class="form-control" placeholder="Enter Income Bill or note or etc...">
