@@ -12,19 +12,14 @@
 	  <div class="form-group">
 	    <label for="exampleInputEmail1">Nama Transaksi</label>
 	    <input type="text" class="form-control" name="expense_name" aria-describedby="emailHelp" placeholder="Enter Transaction Name">
-	    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
 	  </div>
 	  <div class="form-group">
-	    <label for="exampleFormControlSelect1">Category</label>
-	    <select class="form-control" id="exampleFormControlSelect1" name="category">
-	      <option>Kulakan</option>
-	      <option>Kebutuhan sehari - hari</option>
-	      <option>ATK</option>
-	    </select>
-  		</div>
-	  <div class="form-group">
 	    <label for="exampleInputPassword1">Tempat Transaksi</label>
-	    <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Enter expense Value in Rp" name="expense_place">
+	    <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Enter transaction place" name="expense_place">
+	  </div>
+	  <div class="form-group">
+	    <label for="exampleInputPassword1">Tanggal Transaksi</label>
+	    <input type="date" class="form-control" id="exampleInputPassword1" placeholder="Enter transaction date" name="expense_date">
 	  </div>
 	<div class="form-group">
     	<label>Foto Transaksi</label><br>
@@ -42,18 +37,15 @@
   		<div class="form-container itemDetailContainer">
 	  		<div class="form-group">
 		    <label for="exampleInputEmail1">Item Name</label>
-		    <input type="text" class="form-control" name="item_name_1" aria-describedby="emailHelp" placeholder="Enter Transaction Name">
-		    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+		    <input type="text" class="form-control" name="item_name_1" aria-describedby="emailHelp" placeholder="Enter Item Name">
 		  </div>
 		  <div class="form-group">
 		    <label for="exampleInputEmail1">Quantity</label>
-		    <input type="text" class="form-control" name="item_qty_1" aria-describedby="emailHelp" placeholder="Enter Transaction Name">
-		    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+		    <input type="number" class="form-control" name="item_qty_1" aria-describedby="emailHelp" placeholder="Enter Item Quantity">
 		  </div>
 		  <div class="form-group">
 		    <label for="exampleInputEmail1">Unit Price</label>
-		    <input type="text" class="form-control" name="item_price_1" aria-describedby="emailHelp" placeholder="Enter Transaction Name">
-		    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+		    <input type="text" class="form-control" name="item_price_1" aria-describedby="emailHelp" placeholder="Enter Price">
 		  </div>
   		</div>
   	</div>
@@ -88,17 +80,14 @@
 	  		<div class="form-group">
 		    <label for="exampleInputEmail1">Item Name</label>
 		    <input type="text" class="form-control" name="item_name_`+count+`" aria-describedby="emailHelp" placeholder="Enter Transaction Name">
-		    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
 		  </div>
 		  <div class="form-group">
 		    <label for="exampleInputEmail1">Quantity</label>
-		    <input type="text" class="form-control" name="item_qty_`+count+`" aria-describedby="emailHelp" placeholder="Enter Transaction Name">
-		    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+		    <input type="number" class="form-control" name="item_qty_`+count+`" aria-describedby="emailHelp" placeholder="Enter Transaction Name">
 		  </div>
 		  <div class="form-group">
 		    <label for="exampleInputEmail1">Unit Price</label>
 		    <input type="text" class="form-control" name="item_price_`+count+`" aria-describedby="emailHelp" placeholder="Enter Transaction Name">
-		    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
 		  </div>
   		</div>`);
   		document.getElementById("itemNum").value = count;

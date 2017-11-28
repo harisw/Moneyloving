@@ -10,12 +10,38 @@ use App\Models\Record;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-    	$rec = Record::orderBy('created_at', 'desc')->get();
-    	$inc = Income::orderBy('created_at', 'desc')->get();
-
-    	//dd($exp);
+    	$id = $request->session()->get('id');
+    	//dd($id);
+    	$query = DB::select("SELECT users.kunci as kunci , users.IV as iv FROM users WHERE users.id = '".$id."'");
+    	$key = $query[0]->kunci;
+    	$iv = $query[0]->iv;
+    	$rec = Record::where('id_user', $id)->orderBy('created_at', 'desc')->get();
+    	$i = count($rec);
+    	for($j=0;$j<$i;$j++)
+    	{
+    		$rec[$j]->judul_transaksi = $this->dekrip(openssl_decrypt(
+				$rec[$j]->judul_transaksi,
+				'AES-256-CBC',
+				$key,
+				0,
+				$iv	
+				));
+    		$rec[$j]->tempat = $this->dekrip(openssl_decrypt(
+				$rec[$j]->tempat,
+				'AES-256-CBC',
+				$key,
+				0,
+				$iv	
+				));
+    	}
     	return view('start', compact('rec'));
+    }
+    public function dekrip($data)
+    {
+
+    return substr($data, 0, -ord($data[strlen($data) - 1]));
+    
     }	
 }

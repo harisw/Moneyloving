@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Record;
 use App\Models\Detail;
 use File;
+use DB;
 use Illuminate\Support\Facades\Storage;
 
 class ExpenseController extends Controller
@@ -24,7 +25,8 @@ class ExpenseController extends Controller
     {   
         $id = $request->session()->get('id');
         $query = DB::select("SELECT users.kunci as kunci , users.IV as iv FROM users WHERE users.id = '".$id."'");
-    	if($request->hasFile('expense_img'))
+    	$img = null;
+        if($request->hasFile('expense_img'))
     	{
     		$img = $this->uploadImg($request, $request->input('expense_name'));
     	}
@@ -32,7 +34,7 @@ class ExpenseController extends Controller
         $iv = $query[0]->iv;
     	$new_expense = new Record;
     	//$new_expense->judul_transaksi = $request->input('expense_name');
-        $new_income->judul_transaksi = openssl_encrypt(
+        $new_expense->judul_transaksi = openssl_encrypt(
             $this->enkrip($request->input('expense_name'), 16),
             'AES-256-CBC',
             $en_key,
@@ -41,8 +43,9 @@ class ExpenseController extends Controller
             );
         $new_expense->type = '-';
     	$new_expense->jumlah = 0;
+        $new_expense->tanggal = $request->input('expense_date');
     	//$new_expense->tempat = $request->input('expense_place');
-        $new_income->tempat = openssl_encrypt(
+        $new_expense->tempat = openssl_encrypt(
             $this->enkrip($request->input('expense_place'), 16),
             'AES-256-CBC',
             $en_key,
@@ -75,9 +78,9 @@ class ExpenseController extends Controller
 	 			$new_expense->save();
     		}
 
-    		return redirect('/home')->with('status', 'New Income successfully added');
+    		return redirect('/home')->with('status', 'New Expense successfully added');
     	}
-    	return redirect('/expense/new')->with('status', 'Income addition failed');
+    	return redirect('/expense/new')->with('status', 'Expense addition failed');
     }
 
     private function uploadImg($request, $name)

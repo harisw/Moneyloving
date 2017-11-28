@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Record;
+use App\Models\Detail;
 use File;
 use Illuminate\Support\Facades\Storage;
 use DB;
@@ -26,10 +27,12 @@ class IncomeController extends Controller
         //dd($id);
         $query = DB::select("SELECT users.kunci as kunci , users.IV as iv FROM users WHERE users.id = '".$id."'");
         //dd($query);
+        $img = null;
     	if($request->hasFile('income_img'))
     	{
     		$img = $this->uploadImg($request, $request->input('income_name'));
     	}
+
         $en_key = $query[0]->kunci;
         $iv = $query[0]->iv;
         //dd($en_key,$iv);
@@ -45,18 +48,42 @@ class IncomeController extends Controller
         $new_income->type = '+';
 //        $new_income->tempat = 'Sakinah';
         $new_income->tempat = openssl_encrypt(
-            $this->enkrip($request->input('place'), 16),
+            $this->enkrip($request->input('income_place'), 16),
             'AES-256-CBC',
             $en_key,
             0,
             $iv
             );
-    	$new_income->jumlah = $request->input('income_val');
+    	$new_income->jumlah = 0;
+        $new_income->tanggal = $request->input('income_date');
     	$new_income->id_user = $id;
     	if(!empty($img))
     		$new_income->foto = $img;
     	if($new_income->save())
+        {
+            if($request->input('detailCheck'))
+            {
+                $count_detail =  $request->input('item_num');
+                $total = 0;
+                for($i = 1;$i <= $count_detail;$i++)
+                {
+                    $data = array(
+                        'name' => $request->input('item_name_'.$i),
+                        'qty' => $request->input('item_qty_'.$i),
+                        'price' => $request->input('item_price_'.$i),
+                        'id' => $new_income->id
+                    );
+                    $total += ($request->input('item_price_'.$i)*$request->input('item_qty_'.$i));
+                    $report = $this->createItemDetail($data);
+                    if(!$report)
+                        break;
+                }
+                $new_income->jumlah = $total;
+                $new_income->save();
+            }
+
     		return redirect('/home')->with('status', 'New Income successfully added');
+        }
     	return redirect('/income/new')->with('status', 'Income addition failed');
     }
 
@@ -144,5 +171,17 @@ class IncomeController extends Controller
         );
 
         return $images;     
+    }
+
+    private function createItemDetail($data)
+    {
+        $new_item = new Detail;
+        $new_item->nama_item = $data['name'];
+        $new_item->kuantitas = $data['qty'];
+        $new_item->harga = $data['price'];
+        $new_item->id_record = $data['id'];
+        if($new_item->save())
+            return TRUE;
+        return FALSE;
     }
 }

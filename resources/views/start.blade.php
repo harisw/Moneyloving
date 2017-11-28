@@ -46,7 +46,6 @@
                     <th></th>
                     <th>Name</th>
                     <th>Amount</th>
-                    <th>Category</th>
                     <th>Date</th>
                     <th>Receipt</th>
                     <th>Details</th>
@@ -57,8 +56,8 @@
                         <td><i class="fa @if($data->type == '+') fa-plus @else fa-minus @endif" aria-hidden="true"></i></td>
                         <td>{{$data->judul_transaksi}}</td>
                         <td>Rp. {{number_format($data->jumlah)}}</td>
-                        <td>@if($data->category) {{$data->category}} @else - @endif</td>
-                        <td>{{date('d F Y', strtotime($data->created_at))}}</td>
+                        <!-- <td>@if($data->category) {{$data->category}} @else - @endif</td> -->
+                        <td>{{date('d F Y', strtotime($data->tanggal))}}</td>
                         <td>@if($data->foto)
                             <button type="button" data-toggle="modal" data-target=".receiptModal" data-src="{{$data->foto}}" class="btn btn-sm btn-info btn-fill">
                                 <i class="fa fa-file-image-o" aria-hidden="true"></i>
@@ -92,7 +91,7 @@
           <!-- Modal content-->
           <div class="modal-content" style="background-color: transparent; border: transparent;">
               <div class="modal-body photo-container">
-                  <img class="photo" src="{{$data->foto}}">
+                  <img class="photo" src="">
               </div>
           </div>
       </div>
