@@ -5,8 +5,23 @@
 	<link rel="stylesheet" type="text/css" href="{{asset('css/bootstrap.min.css')}}">
 	<script type="text/javascript" src="{{asset('js/bootstrap.min.js')}}"></script>
 	<script type="text/javascript" src="{{asset('js/jquery-3.2.1.min.js')}}"></script>
+
 </head>
 <body>
+     <!-- Navigation -->
+    <nav class="navbar navbar-light bg-light">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Bandeng Lover</a>
+          <a href="{{url('/income/new')}}" style="margin-left: 10px">Add Income</a>
+          <a href="{{url('/expense/new')}}" style="margin-left: 20px">Add Expense</a>
+        </div>
+        Hi, {{session('username')}}
+      </div>
+    </nav>
+	<div class="container">
+		<div class="col-md-8">
+		
 	<form action="{{url('/income')}}" method="POST" enctype="multipart/form-data">
 		{{csrf_field()}}
 	  <div class="form-group">
@@ -15,7 +30,7 @@
 	  </div>
 	  <div class="form-group">
 	    <label for="exampleInputPassword1">Tempat Transaksi</label>
-	    <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Enter transaction place" name="income_place">
+	    <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Enter Transaction Place" name="income_place">
 	  </div>
 	  <div class="form-group">
 	    <label for="exampleInputPassword1">Tanggal Transaksi</label>
@@ -23,8 +38,8 @@
 	  </div>
 	<div class="form-group">
     	<label>Foto Transaksi</label><br>
-        <input type="file" id="inputImg" name="income_img" class="form-control" placeholder="Enter Expense Bill or note or etc...">
-        <img id="preview"  class="img-responsive img-rounded" style="max-height: 400; max-width: 400;">
+        <input type="file" id="inputImg" name="income_img" class="form-control" placeholder="Enter Income Bill or note or etc...">
+        <img id="preview"  class="img-responsive img-rounded" >
     </div>
     <div class="form-check">
     <label class="form-check-label">
@@ -33,19 +48,19 @@
     </label>
   	</div>
   	<hr class="big">
-  	<div class="row" id="exist_detail" style="display: none;">
-  		<div class="form-container itemDetailContainer">
+  	<div class="row col-md-12" id="exist_detail" style="display: none;">
+  		<div class="form-container itemDetailContainer" style="margin-left: 15px;">
 	  		<div class="form-group">
 		    <label for="exampleInputEmail1">Item Name</label>
 		    <input type="text" class="form-control" name="item_name_1" aria-describedby="emailHelp" placeholder="Enter Item Name">
 		  </div>
 		  <div class="form-group">
 		    <label for="exampleInputEmail1">Quantity</label>
-		    <input type="number" class="form-control" name="item_qty_1" aria-describedby="emailHelp" placeholder="Enter Item Quantity">
+		    <input type="text" class="form-control" name="item_qty_1" aria-describedby="emailHelp" placeholder="Enter Item Quantity">
 		  </div>
 		  <div class="form-group">
 		    <label for="exampleInputEmail1">Unit Price</label>
-		    <input type="text" class="form-control" name="item_price_1" aria-describedby="emailHelp" placeholder="Enter Price">
+		    <input type="text" class="form-control" name="item_price_1" aria-describedby="emailHelp" placeholder="Enter Item Price">
 		  </div>
   		</div>
   	</div>
@@ -54,7 +69,8 @@
 
 	  <button type="submit" class="btn btn-primary">Submit</button>
 	</form>
-
+	</div>
+	</div>
 </body>
 <script type="text/javascript">
     document.getElementById('inputImg').onchange = function previewImg(input) {
@@ -76,18 +92,18 @@
     document.getElementById("addDetailBtn").addEventListener("click", function(){
     	var count = document.getElementById("itemNum").value;
     	count++;
-    	$("#exist_detail").append(`<div class="form-container itemDetailContainer">
+    	$("#exist_detail").append(`<div class="form-container itemDetailContainer" style="margin-left: 15px;">
 	  		<div class="form-group">
 		    <label for="exampleInputEmail1">Item Name</label>
-		    <input type="text" class="form-control" name="item_name_`+count+`" aria-describedby="emailHelp" placeholder="Enter Transaction Name">
+		    <input type="text" class="form-control" name="item_name_`+count+`" aria-describedby="emailHelp" placeholder="Enter Item Name">
 		  </div>
 		  <div class="form-group">
 		    <label for="exampleInputEmail1">Quantity</label>
-		    <input type="number" class="form-control" name="item_qty_`+count+`" aria-describedby="emailHelp" placeholder="Enter Transaction Name">
+		    <input type="text" class="form-control" name="item_qty_`+count+`" aria-describedby="emailHelp" placeholder="Enter Item Quantity">
 		  </div>
 		  <div class="form-group">
 		    <label for="exampleInputEmail1">Unit Price</label>
-		    <input type="text" class="form-control" name="item_price_`+count+`" aria-describedby="emailHelp" placeholder="Enter Transaction Name">
+		    <input type="text" class="form-control" name="item_price_`+count+`" aria-describedby="emailHelp" placeholder="Enter Item Price">
 		  </div>
   		</div>`);
   		document.getElementById("itemNum").value = count;
