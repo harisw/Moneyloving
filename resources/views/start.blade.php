@@ -38,6 +38,7 @@
     </nav>
 
     <!-- Icons Grid -->
+    @if({{session('username')}} != 'admin')
     <div class="testimonials bg-light">
       <div class="container">
         <div class="content table-responsive table-full-width">
@@ -45,7 +46,7 @@
                 <thead>
                     <th></th>
                     <th>Name</th>
-                    <th>Amount</th>
+                    <th>Amount</th>      
                     <th>Date</th>
                     <th>Receipt</th>
                     <th>Details</th>
@@ -80,6 +81,60 @@
                         </td>
                     </tr>
                     @endforeach
+                </tbody>
+            </table>
+          </div>
+      </div>
+    </div>
+    @else
+    <div class="testimonials bg-light">
+      <div class="container">
+        <div class="content table-responsive table-full-width">
+            <table class="table table-hover" id="example">
+                <thead>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Amount</th>      
+                    <th>Date</th>
+                    <th>Receipt</th>
+                    <th>Details</th>
+                </thead>
+                <tbody>
+                    <?php $num = count($rec); 
+                    for($i=0;$i<$num;$i++)
+                    {
+                      foreach ($rec[$i] as $data) {
+                        
+                      }
+                    }
+                    ?>
+                    <tr style="background-color: @if($data->type == '+') lightgreen @else lightcoral @endif">
+                        <td><i class="fa @if($data->type == '+') fa-plus @else fa-minus @endif" aria-hidden="true"></i></td>
+                        <td>{{$data->judul_transaksi}}</td>
+                        <td>Rp. {{number_format($data->jumlah)}}</td>
+                        <!-- <td>@if($data->category) {{$data->category}} @else - @endif</td> -->
+                        <td>{{date('d F Y', strtotime($data->tanggal))}}</td>
+                        <td>@if($data->foto)
+                            <button type="button" data-toggle="modal" data-target=".receiptModal" data-src="{{$data->foto}}" class="btn btn-sm btn-info btn-fill">
+                                <i class="fa fa-file-image-o" aria-hidden="true"></i>
+                            </button>
+                            @else
+                            <button type="button" data-toggle="modal" data-target=".receiptModal" data-src="{{$data->foto}}" class="btn btn-sm btn-danger btn-fill" disabled>
+                                <i class="fa fa-file-image-o" aria-hidden="true"></i>
+                            </button>
+                            @endif
+                        </td>
+                        <td>@if(count($data->details))
+                            <button type="button" data-toggle="modal" data-target="#detailModal{{$data->id}}" class="btn btn-sm btn-info btn-fill">
+                                <i class="fa fa-list-ul" aria-hidden="true"></i>
+                            </button>
+                            @else
+                            <button type="button" data-toggle="modal" data-target="#detailModal{{$data->id}}" class="btn btn-sm btn-danger btn-fill" disabled>
+                                <i class="fa fa-list-ul" aria-hidden="true"></i>
+                            </button>
+                            @endif
+                        </td>
+                    </tr>
                 </tbody>
             </table>
           </div>
