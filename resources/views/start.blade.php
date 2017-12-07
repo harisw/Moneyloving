@@ -29,17 +29,41 @@
     <nav class="navbar navbar-light bg-light">
       <div class="container">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">Bandeng Lover</a>
+          <a class="navbar-brand" href="{{url('/')}}">Bandeng Lover</a>
           <a href="{{url('/income/new')}}" style="margin-left: 10px">Add Income</a>
           <a href="{{url('/expense/new')}}" style="margin-left: 20px">Add Expense</a>
         </div>
-        Hi, {{session('username')}}
+        
+        <div class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown">Hi, {{session('username')}}
+          <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <a href="{{url('/logout')}}" class="dropdown-item">Logout</a>
+          </ul>
+        </div> 
       </div>
     </nav>
 
     <!-- Icons Grid -->
-    <div class="testimonials bg-light">
+    <div class="bg-light">
       <div class="container">
+        <div class="row">
+          <div class="col-md-2">
+            <select class="form-control" id="sel1" onchange="location = this.value;">
+              <option value="" hidden>Select Category</option>
+              <option value="{{ url('/') }}">All Records</option>
+              <option value="{{ url('/income') }}">Incomes</option>
+              <option value="{{ url('/expense') }}">Expenses</option>
+            </select>
+          </div>
+          <div class="col-md-9 text-right">
+            @if(isset($sum))
+              Total Incomes : Rp. {{number_format($sum[0]->sum)}}
+            @elseif(isset($sim))
+              Total Expenses : Rp. {{number_format($sim[0]->sum)}}
+            @endif
+          </div>
+        </div>
         <div class="content table-responsive table-full-width">
             <table class="table table-hover" id="example">
                 <thead>
@@ -49,6 +73,8 @@
                     <th>Date</th>
                     <th>Receipt</th>
                     <th>Details</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
                 </thead>
                 <tbody>
                     @foreach($rec as $data)
@@ -59,7 +85,7 @@
                         <!-- <td>@if($data->category) {{$data->category}} @else - @endif</td> -->
                         <td>{{date('d F Y', strtotime($data->tanggal))}}</td>
                         <td>@if($data->foto)
-                            <button type="button" data-toggle="modal" data-target=".receiptModal" data-src="{{$data->foto}}" class="btn btn-sm btn-info btn-fill">
+                            <button type="button" data-toggle="modal" data-target=".receiptModal" data-src="{{$data->foto}}" class="btn btn-sm btn-warning btn-fill">
                                 <i class="fa fa-file-image-o" aria-hidden="true"></i>
                             </button>
                             @else
@@ -68,7 +94,8 @@
                             </button>
                             @endif
                         </td>
-                        <td>@if(count($data->details))
+                        <td>
+                          @if(count($data->details))
                             <button type="button" data-toggle="modal" data-target="#detailModal{{$data->id}}" class="btn btn-sm btn-info btn-fill">
                                 <i class="fa fa-list-ul" aria-hidden="true"></i>
                             </button>
@@ -77,6 +104,26 @@
                                 <i class="fa fa-list-ul" aria-hidden="true"></i>
                             </button>
                             @endif
+                        </td>
+                        <td>
+                          @if($data->type == '+') 
+                          <a href="{{url('/income/update/'.$data->id)}}">
+                            <button type="button" class="btn btn-sm btn-success btn-fill">
+                                <i class="fa fa-edit" aria-hidden="true"></i>
+                            </button>
+                          </a>
+                          @else 
+                          <a href="{{url('/expense/update/'.$data->id)}}">
+                            <button type="button" class="btn btn-sm btn-success btn-fill">
+                                <i class="fa fa-edit" aria-hidden="true"></i>
+                            </button>
+                          </a>
+                          @endif
+                        </td>
+                        <td>
+                          <button type="submit" data-toggle="modal" data-target="#deleteModal" data-id="{{$data->id}}" class="btn btn-sm btn-danger btn-fill">
+                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                          </button>
                         </td>
                     </tr>
                     @endforeach
@@ -93,6 +140,28 @@
                   <img class="photo" src="">
               </div>
           </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-confirmation">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">Delete Record <strong></strong></h4>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to delete this record? You can't recover it after deleted
+          </div>
+          <div class="modal-footer">
+            <form method="POST" action="{{url('/record/delete')}}">
+              {{ csrf_field() }}
+              <input type="hidden" name="id" id="ide">
+              <button type="button" class="btn btn-primary btn-simple" data-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-danger btn-fill">Delete</button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -205,6 +274,16 @@
       // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
       var modal = $(this)
       modal.find('.photo').attr('src', recipient)
+    })
+
+    $('#deleteModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget); // Button that triggered the modal
+      var ide = button.data('id'); // Extract info from data-* attributes
+      // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+      // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+      var modal = $(this);
+      modal.find('.modal-title').text('Delete Record ' + ide);
+      modal.find('.modal-footer input#ide').val(ide);
     })
   </script>
 </html>

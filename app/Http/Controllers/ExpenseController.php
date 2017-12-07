@@ -83,6 +83,109 @@ class ExpenseController extends Controller
     	return redirect('/expense/new')->with('status', 'Expense addition failed');
     }
 
+    public function chosen($id,Request $request)
+    {
+        $exp = Record::find($id);
+
+        $user_id = $request->session()->get('id');
+        $name = $request->session()->get('username');
+        //dd($id);
+            $query = DB::select("SELECT users.kunci as kunci , 
+                        users.IV as iv FROM users WHERE users.id = '".$user_id."'"); 
+            $key = $query[0]->kunci;
+            $iv = $query[0]->iv;
+
+        $exp->judul_transaksi = $this->dekrip(openssl_decrypt(
+            $exp->judul_transaksi,
+            'AES-256-CBC',
+            $key,
+            0,
+            $iv 
+            ));
+        $exp->tempat = $this->dekrip(openssl_decrypt(
+            $exp->tempat,
+            'AES-256-CBC',
+            $key,
+            0,
+            $iv 
+            ));
+        
+        return view('expense.update', compact('exp'));
+    }
+
+    public function update(Request $request)
+    {   
+        //dd($request);
+        $id = $request->session()->get('id');
+        //dd($id);
+        $query = DB::select("SELECT users.kunci as kunci , users.IV as iv FROM users WHERE users.id = '".$id."'");
+        //dd($query);
+        $img = null;
+        if($request->hasFile('expense_img'))
+        {
+            $img = $this->uploadImg($request, $request->input('expense_name'));
+        }
+
+        $en_key = $query[0]->kunci;
+        $iv = $query[0]->iv;
+        //dd($en_key,$iv);
+        $rec_id = $request->input('id');
+        $expense = Record::find($rec_id);
+        //dd($income);
+        //$new_income->judul_transaksi = $request->input('income_name');
+        $expense->judul_transaksi = openssl_encrypt(
+            $this->enkrip($request->input('expense_name'), 16),
+            'AES-256-CBC',
+            $en_key,
+            0,
+            $iv
+            );
+        $expense->type = '-';
+//        $new_income->tempat = 'Sakinah';
+        $expense->tempat = openssl_encrypt(
+            $this->enkrip($request->input('expense_place'), 16),
+            'AES-256-CBC',
+            $en_key,
+            0,
+            $iv
+            );
+        //$new_income->jumlah = 0;
+        if(!is_null($request->input('expense_date'))) $expense->tanggal = $request->input('expense_date');
+        
+        if(!empty($img))
+            $expense->foto = $img;
+        if($expense->save())
+        {
+            if($request->input('detailCheck'))
+            {
+                foreach ($expense->details as $det) {
+                    $det->delete();
+                }
+
+                $count_detail =  $request->input('item_num');
+                $total = 0;
+                for($i = 1;$i <= $count_detail;$i++)
+                {
+                    $data = array(
+                        'name' => $request->input('item_name_'.$i),
+                        'qty' => $request->input('item_qty_'.$i),
+                        'price' => $request->input('item_price_'.$i),
+                        'id' => $expense->id
+                    );
+                    $total += ($request->input('item_price_'.$i)*$request->input('item_qty_'.$i));
+                    $report = $this->createItemDetail($data);
+                    if(!$report)
+                        break;
+                }
+                $expense->jumlah = $total;
+                $expense->save();
+            }
+
+            return redirect('/home')->with('status', 'Expense successfully edited');
+        }
+        return redirect('/expense/update/'.$request->input('id'))->with('status', 'Expense edit failed');
+    }
+
     private function uploadImg($request, $name)
     {
     	//declare folder
@@ -180,4 +283,9 @@ class ExpenseController extends Controller
     		return TRUE;
     	return FALSE;
     }
+
+    public function dekrip($data)
+    {
+        return substr($data, 0, -ord($data[strlen($data) - 1]));
+    }   
 }

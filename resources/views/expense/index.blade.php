@@ -7,15 +7,22 @@
 	<script type="text/javascript" src="{{asset('js/jquery-3.2.1.min.js')}}"></script>
 </head>
 <body>
-<!-- Navigation -->
+    <!-- Navigation -->
     <nav class="navbar navbar-light bg-light">
       <div class="container">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">Bandeng Lover</a>
+          <a class="navbar-brand" href="{{url('/')}}">Bandeng Lover</a>
           <a href="{{url('/income/new')}}" style="margin-left: 10px">Add Income</a>
           <a href="{{url('/expense/new')}}" style="margin-left: 20px">Add Expense</a>
         </div>
-        Hi, {{session('username')}}
+        
+        <div class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown">Hi, {{session('username')}}
+          <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <a href="{{url('/logout')}}" class="dropdown-item">Logout</a>
+          </ul>
+        </div> 
       </div>
     </nav>
 	<div class="container">
