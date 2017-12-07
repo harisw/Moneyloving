@@ -37,8 +37,12 @@
 	  </div>
 	  <div class="form-group">
 	    <label for="exampleInputPassword1">Tempat Transaksi</label>
-	    <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Enter Transaction Place" name="income_place">
-	  </div>
+	    <select class="form-control" id="tempat" placeholder="Select Transaction Place" name="income_place">
+	     <option value="Gerai Klampis">Gerai Klampis</option>
+       <option value="Gerai Simokerto">Gerai Simokerto</option>
+       <option value="Gerai Kertajaya">Gerai Kertajaya</option>
+      </select>
+    </div>
 	  <div class="form-group">
 	    <label for="exampleInputPassword1">Tanggal Transaksi</label>
 	    <input type="date" class="form-control" id="exampleInputPassword1" placeholder="Enter transaction date" name="income_date">

@@ -44,8 +44,28 @@
   		</div>
 	  <div class="form-group">
 	    <label for="exampleInputPassword1">Tempat Transaksi</label>
-	    <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Enter Transaction Place" name="expense_place">
+	    <select type="text" class="form-control" id="tempat" placeholder="Enter Transaction Place" name="expense_place">
+      <option disabled selected value>--SELECT PLACE--</option>
+      @foreach($query as $db)
+      <option value="{{$db->tempat}}">{{$db->tempat}}</option>
+      @endforeach
+      </select>
+      <br>
+      <div class="form-check">
+        <label class="form-check-label">
+        <input type="checkbox" class="form-check-input" id="placeCheck" name="placeCheck" value="true">
+        Add New Places
+        </label>
+      </div>  
 	  </div>
+    <div class="row col-md-12" id="place_detail" style="display: none;">
+      <div class="form-container itemDetailContainer" style="margin-left: 15px;">
+        <div class="form-group">
+        <label for="exampleInputEmail1">Places</label>
+        <input type="text" class="form-control" name="place" aria-describedby="emailHelp" placeholder="Enter Place Here">
+        </div>
+      </div>
+    </div>
 	  <div class="form-group">
 	    <label for="exampleInputPassword1">Tanggal Transaksi</label>
 	    <input type="date" class="form-control" id="exampleInputPassword1" placeholder="Enter transaction date" name="expense_date">
@@ -102,6 +122,13 @@
     		$("#exist_detail").show();
     	else
     		$("#exist_detail").hide();
+    });
+    $("#placeCheck").change(function(){
+      var status = $("#placeCheck").prop("checked");
+      if(status)
+        $("#place_detail").show();
+      else
+        $("#place_detail").hide();
     });
     document.getElementById("addDetailBtn").addEventListener("click", function(){
     	var count = document.getElementById("itemNum").value;

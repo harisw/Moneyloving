@@ -13,7 +13,28 @@ class ExpenseController extends Controller
 {
     public function index()
     {
-    	return view('expense.index');
+    	$query = DB::select("SELECT id_user,tempat FROM record WHERE record.type = '-'
+            GROUP BY tempat");
+        $jml = count($query);
+        //dd($query);
+        for($i=0;$i<$jml;$i++)
+        {
+            $id = $query[$i]->id_user;
+            $query2 = DB::select("SELECT kunci, IV FROM users WHERE id='".$id."'");
+            //dd($query2);
+            $key = $query2[0]->kunci;
+            $iv = $query2[0]->IV;
+
+            $query[$i]->tempat = $this->dekrip(openssl_decrypt(
+                    $query[$i]->tempat,
+                    'AES-256-CBC',
+                    $key,
+                    0,
+                    $iv 
+                    ));
+        }
+        //dd($query);
+        return view('expense.index', compact('query'));
     }
     public function enkrip($data, $size)
     {
@@ -23,6 +44,7 @@ class ExpenseController extends Controller
 
     public function create(Request $request)
     {   
+        //dd($request);
         $id = $request->session()->get('id');
         $query = DB::select("SELECT users.kunci as kunci , users.IV as iv FROM users WHERE users.id = '".$id."'");
     	$img = null;
@@ -45,13 +67,37 @@ class ExpenseController extends Controller
     	$new_expense->jumlah = 0;
         $new_expense->tanggal = $request->input('expense_date');
     	//$new_expense->tempat = $request->input('expense_place');
-        $new_expense->tempat = openssl_encrypt(
-            $this->enkrip($request->input('expense_place'), 16),
+        if(!$request->input('expense_place'))
+        {
+            $new_expense->tempat = openssl_encrypt(
+            $this->enkrip($request->input('place'), 16),
+            'AES-256-CBC',
+            $en_key,
+            0,
+            $iv
+            );    
+        }
+        else if( ($request->input('expense_place') != null) 
+            && ($request->input('place') != null) )
+        {
+            $new_expense->tempat = openssl_encrypt(
+            $this->enkrip($request->input('place'), 16),
             'AES-256-CBC',
             $en_key,
             0,
             $iv
             );
+        }
+        else
+        {
+            $new_expense->tempat = openssl_encrypt(
+            $this->enkrip($request->input('expense_place'), 16),
+            'AES-256-CBC',
+            $en_key,
+            0,
+            $iv
+            );   
+        }
     	$new_expense->id_user = $id;
     	if($img)
     		$new_expense->foto = $img;
